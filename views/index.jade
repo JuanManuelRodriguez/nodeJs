@@ -1,0 +1,18 @@
+html(lang="en")
+    head
+        title jadeInit
+    body
+        //esto es un comentario
+       - var arreglo=[1,2,3,4,5];
+           p.
+               Hola haz clic en #[a(href="https://www.google.com.ar") esste link]
+       each item in arreglo
+           p= item
+           case item
+               when 1
+                   p El item es 1
+               when 2
+                   p el item es 2
+               default
+                   p el item no es ni uno, ni dos
+
