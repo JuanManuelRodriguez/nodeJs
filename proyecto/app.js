@@ -4,15 +4,23 @@
 var express=require("express");
 var bodyParser=require("body-parser");
 var User = require("./models/user").User;
+var session = require("express-session");
+
 var app= express();
 
 app.use("/public",express.static('public'));
 app.use(bodyParser.json());//para peticiones  application/json
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(session({
+    secret:"123saraseando43ube",
+    resave: false,
+    saveUninitialized:false
+}));
 
 app.set("view engine","jade");
 
 app.get("/",function (req,res) {
+    console.log(req.session.user_id);
     res.render("index");
 });
 
@@ -47,9 +55,9 @@ app.post("/users",function (req,res) {
 });
 
 app.post("/sessions",function (req,res) {
-    User.findOne({email:req.body.email,password:req.body.password},"username email",function (err,docs) {
-        console.log(docs);
-        res.send("HOLA MUNDO");
+    User.findOne({email:req.body.email,password:req.body.password},"username email",function (err,user) {
+        req.session.user_id = user._id;
+        res.send("Hola mundo!!!");
     })
 });
 
