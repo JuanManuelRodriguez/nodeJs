@@ -5,12 +5,13 @@ var express=require("express");
 var bodyParser=require("body-parser");
 var User = require("./models/user").User;
 var session = require("express-session");
-
+var router_app = require("./app/router_app");
 var app= express();
 
 app.use("/public",express.static('public'));
 app.use(bodyParser.json());//para peticiones  application/json
 app.use(bodyParser.urlencoded({extended: true}));
+
 app.use(session({
     secret:"123saraseando43ube",
     resave: false,
@@ -61,5 +62,5 @@ app.post("/sessions",function (req,res) {
     })
 });
 
-
+app.use("/app",router_app);
 app.listen(8080);
