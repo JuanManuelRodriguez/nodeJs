@@ -52,15 +52,13 @@ app.post("/users",function (req,res) {
             console.log(String(err));
             res.send("No pudimos Guardar tus datos");
         }
-
     });
-
 });
 
 app.post("/sessions",function (req,res) {
     User.findOne({email:req.body.email,password:req.body.password},"username email",function (err,user) {
         req.session.user_id = user._id;
-        res.send("Hola mundo!!!");
+        res.redirect("/app");
     })
 });
 
