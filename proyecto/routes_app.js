@@ -10,8 +10,13 @@ var image_finder_middleware = require("./middlewares/find_image");
 
 // app.com/app/
 router.get("/", function (req, res) {
-    /* Buscar el usuario */
-    res.render("app/home")
+    Imagen.find({})
+        .populate("creator")
+        .exec(function (err,imagenes) {
+           if (err) console.log(err);
+            res.render("app/home",{imagenes:imagenes})
+
+        });
 });
 
 /* REST */
