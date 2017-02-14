@@ -53,7 +53,7 @@ router.route("/imagenes/:id")
 //coleccion de imagenes
 router.route("/imagenes")
     .get(function (req,res) {
-        Imagen.find({},function (err,imagenes) {
+        Imagen.find({creator:res.locals.user._id},function (err,imagenes) {
             if(err){
                 res.redirect("/app");
                 return;
@@ -65,8 +65,10 @@ router.route("/imagenes")
 
     })
     .post(function (req,res) {
+        console.log(res.locals.user._id);
         var data = {
-            title: req.body.title
+            title: req.body.title,
+            creator: res.locals.user._id
         };
 
         var imagen = new Imagen(data);
@@ -75,6 +77,7 @@ router.route("/imagenes")
                 res.redirect("/app/imagenes/"+imagen._id);
             }
             else{
+                console.log(imagen);
                 res.render(err);
             }
         })
