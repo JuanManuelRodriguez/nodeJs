@@ -2,19 +2,17 @@
  * Created by juanma on 10/02/17.
  */
 var express=require("express");
-var bodyParser=require("body-parser");
 var User = require("./models/user").User;
 var cookieSession = require("cookie-session");
 var router_app = require("./routes_app");
 var session_middleware= require("./middlewares/session");
+var formidable = require("express-formidable");
 
 var methodOverride = require("method-override");
 
 var app= express();
 
 app.use("/public",express.static('public'));
-app.use(bodyParser.json());//para peticiones  application/json
-app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(methodOverride("_method"));
 
@@ -22,6 +20,8 @@ app.use(cookieSession({
     name:"session",
     keys:["llave-1", "llave-2"]
 }));
+
+app.use(formidable({ keepExtensions:true })) ;//{} carpeta temporal donde se guardaran las imagenes
 
 app.set("view engine","jade");
 
@@ -43,10 +43,10 @@ app.get("/login",function (req,res) {
 });
 
 app.post("/users",function (req,res) {
-    var user= new User({email: req.body.email,
-                        password: req.body.password,
-                        password_confirmation: req.body.password_confirmation,
-                        username: req.body.username
+    var user= new User({email: req.fields.email,
+                        password: req.fields.password,
+                        password_confirmation: req.fields.password_confirmation,
+                        username: req.fields.username
     });
     user.save().then(function(us){
         res.send("Guardamos el usuario exitosamente");
@@ -59,7 +59,7 @@ app.post("/users",function (req,res) {
 });
 
 app.post("/sessions",function (req,res) {
-    User.findOne({email:req.body.email,password:req.body.password},function (err,user) {
+    User.findOne({email:req.fields.email,password:req.fields.password},function (err,user) {
         req.session.user_id = user._id;
         res.redirect("/app");
     })
