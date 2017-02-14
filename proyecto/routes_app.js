@@ -38,7 +38,13 @@ router.route("/imagenes/:id")
 //coleccion de imagenes
 router.route("/imagenes")
     .get(function (req,res) {
-
+        Imagen.find({},function (err,imagenes) {
+            if(err){
+                res.redirect("/app");
+                return;
+            }
+            res.render("app/imagenes/index",{imagenes: imagenes});
+        });
     })
     .put(function (req,res) {
 
