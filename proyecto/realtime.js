@@ -13,8 +13,9 @@ module.exports = function (server,sessionMiddleware) {
     });
     
     client.on("message",function (channel,message) {
-        console.log("Recibimos un mensaje del canal: "+channel);
-        console.log(message);
+       if(channel=="images"){
+           io.emit("new image",message);//mensaje que se envia a todos
+       }
     });
     
     io.sockets.on("connection",function (socket) {

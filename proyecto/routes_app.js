@@ -85,7 +85,14 @@ router.route("/imagenes")
         var imagen = new Imagen(data);
         imagen.save(function (err) {
             if(!err){
-                client.publish("images",imagen.toString());
+
+                var imgJSON = {
+                    "id":imagen._id,
+                    "title": imagen.title,
+                    "extension":imagen.extension
+                };
+
+                client.publish("images",JSON.stringify(imgJSON));
                 fs.rename(req.files.archivo.path,"public/images/"+imagen._id+"."+extension);
                 res.redirect("/app/imagenes/"+imagen._id);
             }
