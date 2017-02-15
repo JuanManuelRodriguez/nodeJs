@@ -1,12 +1,17 @@
 /**
  * Created by juanma on 10/02/17.
- */
+ * 
+ * 
+ * Para que funcione la app hay que tener ejecutandose en 2 terminales distintas
+ * redis-server y nodemon
+ */ 
 var express=require("express");
 var User = require("./models/user").User;
-var cookieSession = require("cookie-session");
+var session = require("express-session");
 var router_app = require("./routes_app");
 var session_middleware= require("./middlewares/session");
 var formidable = require("express-formidable");
+var RedisStore = require("connect-redis")(session);
 
 var methodOverride = require("method-override");
 
@@ -16,17 +21,21 @@ app.use("/public",express.static('public'));
 
 app.use(methodOverride("_method"));
 
-app.use(cookieSession({
-    name:"session",
-    keys:["llave-1", "llave-2"]
-}));
+var sessionMiddleware = session({// no tiene nada que ver con session_middleware
+    store:new RedisStore({}),
+    secret:"ultra secret",
+    resave: false,
+    saveUninitialized:false
+});
+
+app.use(sessionMiddleware);
 
 app.use(formidable({ keepExtensions:true })) ;//{} carpeta temporal donde se guardaran las imagenes
 
 app.set("view engine","jade");
 
 app.get("/",function (req,res) {
-    console.log(req.session.user_id);
+    //console.log(req.session.user_id);
     res.render("index");
 });
 
@@ -68,4 +77,4 @@ app.post("/sessions",function (req,res) {
 app.use("/app",session_middleware);
 app.use("/app",router_app);
 
-app.listen(8080);
+app.listen(8081);
