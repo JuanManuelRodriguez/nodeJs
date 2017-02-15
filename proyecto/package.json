@@ -17,6 +17,7 @@
     "jade": "^1.11.0",
     "method-override": "^2.3.7",
     "mongoose": "^4.8.1",
+    "redis": "^2.6.5",
     "socket.io": "^1.7.2"
   }
 }
